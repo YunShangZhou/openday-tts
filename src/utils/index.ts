@@ -1,7 +1,7 @@
 export function getAudioUrl(
   recorderInstance: any,
   onSetUrl: (url: string) => void,
-  onSetBlobData: (data: any) => void
+  onSetBase64: (data: any) => void
 ) {
   if (navigator.mediaDevices.getUserMedia) {
     console.log("getUserMedia supported.");
@@ -15,13 +15,12 @@ export function getAudioUrl(
 
       // onstop
       recorderInstance.current.onstop = function (e: any) {
-        const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
-        console.log(`>>>>> blob`, blob);
+        const blob = new Blob(chunks, { type: "audio/wav; codecs=opus" });
 
         blobToBase64(blob).then((res) => {
-          console.log(`>>> res`, res);
-          onSetBlobData(res);
+          onSetBase64(res);
         });
+
         const url = window.URL.createObjectURL(blob);
         onSetUrl(url);
 
@@ -31,7 +30,6 @@ export function getAudioUrl(
       // ondataavailable
       recorderInstance.current.ondataavailable = function (e: any) {
         chunks.push(e.data);
-        console.log(`>>>> final chunks`, chunks);
       };
     };
 
@@ -45,23 +43,29 @@ export function getAudioUrl(
   }
 }
 
-export function blobToBase64(blobData: Blob) {
-  return new Promise((resolve, reject) => {
-    // 假设有一个 Blob 对象
-    let blob = new Blob([blobData], { type: "text/plain" });
+export async function blobToBase64(blobData: Blob) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      // notice: 需要过滤掉前缀，否则不视为有效b64编码。
+      // const mockData = ["data:audio/wav; codecs=opus;base64", "纯b64编码"];
+      const base64Data = (reader?.result as any)?.split?.(",")?.[1];
 
-    // 创建一个 FileReader 对象
-    let reader = new FileReader();
-
-    // 监听 FileReader 的 onload 事件
-    reader.onload = function (event) {
-      // 获取 Base64 编码的数据
-      let base64 = event.target.result;
-      // console.log(base64);
-      resolve(base64);
+      resolve(base64Data);
     };
-
-    // 读取 Blob 对象为 Data URL
-    reader.readAsDataURL(blob);
+    reader.readAsDataURL(blobData);
   });
 }
+
+export const base64ToURL = (base64: string) => {
+  const binaryStr = atob(base64);
+  const buffer = new ArrayBuffer(binaryStr.length);
+  const view = new Uint8Array(buffer);
+  for (let i = 0; i < binaryStr.length; i++) {
+    view[i] = binaryStr.charCodeAt(i);
+  }
+  const blob = new Blob([view], { type: "audio/mp3" });
+  const url = URL.createObjectURL(blob);
+
+  return url;
+};

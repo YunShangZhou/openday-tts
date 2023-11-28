@@ -1,23 +1,12 @@
 "use client";
-import { getCovertSpeechUrl } from "@/service";
-import { getAudioUrl } from "@/utils";
-import Image from "next/image";
-import { useEffect, useReducer, useRef, useState } from "react";
-
-const roleMap = [
-  {
-    name: "Tom",
-  },
-  {
-    name: "Sandy",
-  },
-  {
-    name: "Allen",
-  },
-];
+import { roleNameMap } from "@/constant";
+import { getCovertSpeechUrl } from "@/services";
+import { base64ToURL, blobToBase64, getAudioUrl } from "@/utils";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
-  const [role, setRole] = useState<string>("");
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [role, setRole] = useState<string>("xunmengchu");
   const [recording, setRecording] = useState<boolean>(false);
 
   const [audioUrl, setAudioUrl] = useState<string>("");
@@ -25,41 +14,36 @@ export default function Home() {
 
   const recorderInstance = useRef<any>();
 
-  // fetchSpeech(role, b64Data);
-  // const { data } = useSWR([ ] , ([])=> fetcher())
-
   useEffect(() => {
     getAudioUrl(recorderInstance, setAudioUrl, setB64Data);
   }, []);
 
   useEffect(() => {
-    if (!recording) {
+    if (!recording && !!b64Data) {
       fetchSpeech();
     }
   }, [b64Data]);
 
   const fetchSpeech = async () => {
     const params = {
-      tags: {
-        ["voice.speaker"]: "",
-      },
+      // speech,
       speech: b64Data,
+      tags: { "voice.speaker": role },
       appkey: "crowdsourcing-vc",
       avatar_id: "default",
       inputs: ["speech"],
       outputs: ["speech"],
     };
-    params.tags["voice.speaker"] = "yucangyuan" || role;
 
     const res = await getCovertSpeechUrl(params);
-    console.log(`>>> res`, res);
-
-    // setAudioUrl(res.data.url)
+    if (res) {
+      const { speech } = res;
+      const url: string = base64ToURL(speech);
+      setAudioUrl(url);
+    }
   };
 
-  const handleClick = () => {};
   const handleRoleToggle = (name: string) => {
-    console.log(`>>> role name`, name);
     setRole(name);
   };
 
@@ -74,34 +58,41 @@ export default function Home() {
     recorderInstance.current.stop();
     setRecording(false);
   };
+
   return (
     <main className="min-h-screen w-3/5 flex flex-col justify-center items-center my-0 mx-auto">
       <div className="flex justify-between w-full mb-4">
-        {roleMap.map((item, index) => {
+        {roleNameMap.map(([en, cn], index) => {
           return (
             <div
               key={index}
-              className="p-4 border border-black cursor-pointer hover:bg-gray-200"
-              onClick={() => handleRoleToggle(item.name)}
+              className={`p-4 border border-black cursor-pointer hover:bg-gray-200 ${
+                index === activeIndex && "bg-red-200"
+              }`}
+              onClick={() => {
+                setActiveIndex(index);
+                handleRoleToggle(en);
+              }}
             >
-              {item.name}
+              {cn}
             </div>
           );
         })}
       </div>
       <div className="flex gap-4 items-center justify-center w-full">
-        <audio className="flex-1" controls src={audioUrl} />
-        <div className="flex gap-2 items-center justify-center">
-          <button disabled={recording} onClick={handleRecord}>
-            录音
-          </button>
-          <button disabled={!recording} onClick={handleStop}>
-            完成
-          </button>
-          <div className="flex gap-4 items-center justify-center color:red">
-            <span>状态:</span>
-            {recording ? <span>录音中...</span> : <span>🤚停止</span>}
+        {recording ? (
+          <div style={{ width: "400px", borderRight: "1px solid black" }}>
+            录音中...
           </div>
+        ) : (
+          <audio className="flex-1" controls src={audioUrl} />
+        )}
+        <div className="flex gap-2 items-center justify-center">
+          {recording ? (
+            <button onClick={handleStop}>完成</button>
+          ) : (
+            <button onClick={handleRecord}>录音</button>
+          )}
         </div>
       </div>
     </main>
