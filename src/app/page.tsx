@@ -59,8 +59,22 @@ export default function Home() {
     setRecording(false);
   };
 
+  const handleGetData = () => {
+    const url = "/test1";
+    fetch(url)
+      .then((r) => {
+        return r.json();
+      })
+      .then((res) => {
+        console.log(`>>> res`, res);
+      });
+  };
+
   return (
     <main className="min-h-screen w-3/5 flex flex-col justify-center items-center my-0 mx-auto">
+      <button className="border border-black" onClick={handleGetData}>
+        获取接口测试
+      </button>
       <div className="flex justify-between w-full mb-4">
         {roleNameMap.map(([en, cn], index) => {
           return (
