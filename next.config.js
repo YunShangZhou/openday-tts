@@ -9,6 +9,7 @@ const testServer = {
 };
 
 const nextConfig = {
+  ouput: "standalone",
   async rewrites() {
     return [
       {
