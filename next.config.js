@@ -1,4 +1,4 @@
-/** @type {import('next').NextConfig} */
+/* @type {import('next').NextConfig} */
 
 const ttsServer = {
   avatarlib: "https://avatarlib-dev.apps-cae.danlu.netease.com",
@@ -9,7 +9,7 @@ const testServer = {
 };
 
 const nextConfig = {
-  ouput: "standalone",
+  output: "standalone",
   async rewrites() {
     return [
       {
