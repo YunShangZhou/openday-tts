@@ -3,7 +3,7 @@ export function getAudioUrl(
   onSetUrl: (url: string) => void,
   onSetBase64: (data: any) => void
 ) {
-  if (navigator.mediaDevices.getUserMedia) {
+  if (navigator?.mediaDevices?.getUserMedia) {
     console.log("getUserMedia supported.");
     const constraints = { audio: true };
     let chunks: any[] = [];
@@ -37,7 +37,7 @@ export function getAudioUrl(
       console.log("The following error occured: " + err);
     };
 
-    navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, onError);
+    navigator?.mediaDevices?.getUserMedia?.(constraints).then(onSuccess, onError);
   } else {
     console.log("getUserMedia not supported on your browser!");
   }
