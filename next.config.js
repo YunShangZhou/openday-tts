@@ -10,6 +10,15 @@ const testServer = {
 
 const nextConfig = {
   output: "standalone",
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/home',
+        permanent: true,
+      },
+    ]
+  },
   async rewrites() {
     return [
       {
