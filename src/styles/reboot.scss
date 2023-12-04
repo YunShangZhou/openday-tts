@@ -1,0 +1,12 @@
+body {
+  width: 100vw;
+  height: 100vh;
+  background: url("~@/assets/image/bg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+body * {
+  user-select: none;
+}

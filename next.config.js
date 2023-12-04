@@ -1,4 +1,4 @@
-/* @type {import('next').NextConfig} */
+const path = require("path");
 
 const ttsServer = {
   avatarlib: "https://avatarlib-dev.apps-cae.danlu.netease.com",
@@ -10,14 +10,17 @@ const testServer = {
 
 const nextConfig = {
   output: "standalone",
+  sassOptions: {
+    includePaths: [path.join(__dirname, "styles")],
+  },
   async redirects() {
     return [
       {
-        source: '/',
-        destination: '/home',
+        source: "/",
+        destination: "/home",
         permanent: true,
       },
-    ]
+    ];
   },
   async rewrites() {
     return [

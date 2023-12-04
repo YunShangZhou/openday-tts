@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  @media (max-width: 1920px) {
+    --scale: 0.9;
+  }
+
+  @media (min-width: 1920px) {
+    --scale: 1;
+  }
+
+  @media (min-width: 3840px) {
+    --scale: 2;
+  }
+}

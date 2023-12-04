@@ -1,19 +1,38 @@
+"use client";
 import Image from "next/image";
 
+import { roleCardData, roleNameMap } from "@/constant";
 import TopTitleImg from "@/assets/image/home-top-title.png";
 import StarSvg from "@/assets/svg/star.svg";
+import microphoneSvg from "@/assets/svg/microphone.svg";
 
-import styles from "./index.module.css";
+import styles from "./index.module.scss";
 import classnames from "classnames/bind";
+import { useState } from "react";
+import Link from "next/link";
 const cx = classnames.bind(styles);
 
 const Home: React.FC = () => {
+  const [activeIndex, setActiveIndex] = useState<number>(-1);
+
   const renderRoleCardList = () => {
     return (
-      <>
-        {roleCardList.map((item, index) => {
+      <div className={cx("card-list")}>
+        {roleCardData.map((item, index) => {
           return (
-            <div className={cx("card-item")} style={item.style} key={index}>
+            <div
+              className={cx(
+                "item",
+                ...item.classNames,
+                index === activeIndex ? "item--active" : ""
+              )}
+              style={item.style}
+              key={index}
+              onClick={() => {
+                setActiveIndex(index);
+              }}
+            >
+              <Image src={item.src} layout="fill" alt="" />
               <div className={cx("introduce")}>
                 <Image src={StarSvg} alt="" width={44} height={44} />
                 <span className={cx("name")}>{item.name}</span>
@@ -22,15 +41,39 @@ const Home: React.FC = () => {
             </div>
           );
         })}
-      </>
+      </div>
     );
   };
 
   return (
     <div className={cx("home")}>
-      <Image src={TopTitleImg.src} alt="" width={565} height={256} />
+      <Image
+        className={cx("top-title-img")}
+        src={TopTitleImg.src}
+        alt=""
+        width={565}
+        height={256}
+      />
       <div className={cx("description")}>你想变成谁，给大家送新年祝福？</div>
-      {renderRoleCardList()}
+      <div className={cx("card-list-wrap")}>
+        {renderRoleCardList()}
+        <Link
+          href={`/speechCovert?role=${roleNameMap?.[activeIndex]?.[0]}`}
+          className={cx(
+            "confirm-btn",
+            activeIndex < 0 ? "confirm-btn--disabled" : ""
+          )}
+        >
+          确定
+        </Link>
+      </div>
+      <Image
+        className={cx("microphone-svg")}
+        src={microphoneSvg}
+        alt=""
+        width={172}
+        height={330}
+      />
     </div>
   );
 };
