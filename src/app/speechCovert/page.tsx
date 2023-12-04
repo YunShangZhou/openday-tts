@@ -9,6 +9,8 @@ import styles from "./index.module.scss";
 import classnames from "classnames/bind";
 import { roleData } from "@/constant";
 import { useEffect, useRef, useState } from "react";
+import { base64ToURL, getAudioUrl } from "@/utils";
+import { getCovertSpeechUrl } from "@/services";
 const cx = classnames.bind(styles);
 
 const TOTAL_TIME = 60;
@@ -22,6 +24,37 @@ const Home: React.FC = () => {
     TOTAL_TIME * PER_FRAME
   ); // 倒计时 * 每秒帧数
   const timer = useRef<any>(null);
+  const [recording, setRecording] = useState<boolean>(false);
+
+  const [audioUrl, setAudioUrl] = useState<string>("");
+  const [b64Data, setB64Data] = useState<any>("");
+
+  const recorderInstance = useRef<any>(null);
+
+  useEffect(() => {
+    console.log(`>>> audioUrl`, audioUrl);
+  }, [audioUrl]);
+
+  useEffect(() => {
+    getAudioUrl(recorderInstance, setAudioUrl, setB64Data);
+  }, []);
+
+  useEffect(() => {
+    if (recorderInstance.current !== null && !recording) {
+      console.log("开始录制...");
+      console.log(`recorderInstance.current`, recorderInstance.current);
+      recorderInstance.current.start();
+      setRecording(true);
+    }
+  }, [recorderInstance.current]);
+
+  useEffect(() => {
+    console.log("111");
+    if (!recording && !!b64Data) {
+      console.log("222");
+      fetchSpeech();
+    }
+  }, [b64Data]);
 
   useEffect(() => {
     if (timer.current === null) {
@@ -33,6 +66,37 @@ const Home: React.FC = () => {
       clearInterval(timer.current);
     }
   }, [currentFrame]);
+
+  const fetchSpeech = async () => {
+    const params = {
+      // speech,
+      speech: b64Data,
+      tags: { "voice.speaker": role },
+      appkey: "crowdsourcing-vc",
+      avatar_id: "default",
+      inputs: ["speech"],
+      outputs: ["speech"],
+    };
+
+    const res = await getCovertSpeechUrl(params);
+    console.log(`>>>>> res`, res);
+    if (res) {
+      const { speech } = res;
+      const url: string = base64ToURL(speech);
+      setAudioUrl(url);
+    }
+  };
+
+  const handleReset = () => {
+    setCurrentFrame(TOTAL_TIME * PER_FRAME);
+    setAudioUrl("");
+  };
+
+  const handleFetch = () => {
+    console.log(`>>> 过年`);
+    recorderInstance.current.stop();
+    setRecording(false);
+  };
 
   return (
     <div className={cx("speech-covert")}>
@@ -72,25 +136,37 @@ const Home: React.FC = () => {
               height={200}
             />
             <div className={cx("progress-wrap")}>
-              <div className={cx("progress")}>
-                <div
-                  className={cx("progress-inner")}
-                  style={{
-                    width: `${
-                      (currentFrame * 100) / (TOTAL_TIME * PER_FRAME)
-                    }%`,
-                  }}
-                />
-              </div>
+              {audioUrl === "" && (
+                <div className={cx("progress")}>
+                  <div
+                    className={cx("progress-inner")}
+                    style={{
+                      width: `${
+                        (currentFrame * 100) / (TOTAL_TIME * PER_FRAME)
+                      }%`,
+                    }}
+                  />
+                </div>
+              )}
+              {audioUrl && <audio className="flex-1" controls src={audioUrl} />}
               <span className={cx("text")}>{`祝福语音计时 ${Math.ceil(
                 currentFrame / PER_FRAME
               )}s`}</span>
             </div>
           </div>
           <div className={cx("btns-wrap")}>
-            <button className={cx('btn',"complete-btn")}>完成</button>
-            {currentFrame === 0 && (
-              <button className={cx('btn',"reset-btn")}>重新录制</button>
+            {audioUrl === "" && (
+              <button
+                className={cx("btn", "complete-btn")}
+                onClick={handleFetch}
+              >
+                {recording ? "完成" : "开始"}
+              </button>
+            )}
+            {(currentFrame === 0 || audioUrl) && (
+              <button className={cx("btn", "reset-btn")} onClick={handleReset}>
+                重新录制
+              </button>
             )}
           </div>
         </div>

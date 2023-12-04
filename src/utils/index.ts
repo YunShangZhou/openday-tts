@@ -16,12 +16,13 @@ export function getAudioUrl(
       // onstop
       recorderInstance.current.onstop = function (e: any) {
         const blob = new Blob(chunks, { type: "audio/wav; codecs=opus" });
-
+        console.log(`>>>> blob`, blob);
         blobToBase64(blob).then((res) => {
           onSetBase64(res);
         });
 
         const url = window.URL.createObjectURL(blob);
+        console.log(`>>>>> radio url`, url);
         onSetUrl(url);
 
         chunks = [];
@@ -37,7 +38,9 @@ export function getAudioUrl(
       console.log("The following error occured: " + err);
     };
 
-    navigator?.mediaDevices?.getUserMedia?.(constraints).then(onSuccess, onError);
+    navigator?.mediaDevices
+      ?.getUserMedia?.(constraints)
+      .then(onSuccess, onError);
   } else {
     console.log("getUserMedia not supported on your browser!");
   }
