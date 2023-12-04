@@ -90,6 +90,8 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             background: rgba(255, 255, 255, 0.2);
             overflow: hidden;
+            display: flex;
+            align-items: center;
 
             &-inner {
               height: 100%;
@@ -108,19 +110,31 @@
         }
       }
 
-      .complete-btn {
-        margin-top: 32px;
-        display: inline-flex;
-        padding: 8px 40px;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-        border-radius: 40px;
-        background-color: #ff504d;
+      .btns-wrap {
+        display: flex;
+        gap: 25px;
+        .btn {
+          margin-top: 32px;
+          display: inline-flex;
+          padding: 8px 40px;
+          justify-content: center;
+          align-items: center;
+          gap: 10px;
+          border-radius: 40px;
 
-        color: #000;
-        font-size: 32px;
-        font-weight: 500;
+          font-size: 32px;
+          font-weight: 500;
+        }
+
+        .complete-btn {
+          background-color: #ff504d;
+          color: #000;
+        }
+
+        .reset-btn {
+          background-color: rgb(106, 77, 235);
+          color: white;
+        }
       }
 
       .complete-btn:hover {

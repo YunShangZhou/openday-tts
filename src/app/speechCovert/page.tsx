@@ -11,13 +11,12 @@ import { roleData } from "@/constant";
 import { useEffect, useRef, useState } from "react";
 const cx = classnames.bind(styles);
 
+const TOTAL_TIME = 60;
+const PER_FRAME = 60;
+
 const Home: React.FC = () => {
   const searchParams = useSearchParams();
   const role = searchParams.get("role") as string;
-  console.log(`>>> role`, role);
-
-  const TOTAL_TIME = 60;
-  const PER_FRAME = 60;
 
   const [currentFrame, setCurrentFrame] = useState<number>(
     TOTAL_TIME * PER_FRAME
@@ -60,7 +59,7 @@ const Home: React.FC = () => {
             </span>
             <br />
             <span className={cx("text")}>
-              {roleData[role].realName || roleData[role].name}1
+              {roleData[role].realName || roleData[role].name}
               祝在座的各位，在新的一年里____________！
             </span>
           </div>
@@ -88,7 +87,12 @@ const Home: React.FC = () => {
               )}s`}</span>
             </div>
           </div>
-          <button className={cx("complete-btn")}>完成</button>
+          <div className={cx("btns-wrap")}>
+            <button className={cx('btn',"complete-btn")}>完成</button>
+            {currentFrame === 0 && (
+              <button className={cx('btn',"reset-btn")}>重新录制</button>
+            )}
+          </div>
         </div>
         <div className={cx("footer")}>
           <div className={cx("text-wrap")}>
