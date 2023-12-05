@@ -17,8 +17,11 @@ interface roleCardDataProps {
   classNames: string[];
 }
 
+export const TOTAL_TIME = 60;
+export const PER_FRAME = 60;
+
 export const roleData: Record<string, any> = {
-  luoliyin: {
+  maomao: {
     group: "fuxi",
     realName: "卯卯",
     name: "萝莉音",
@@ -110,8 +113,9 @@ export const roleCardData: roleCardDataProps[] = [
 ];
 
 export const roleAvatarImgMap: Record<string, string> = {
-  luoliyin: role1AvatarImg.src,
+  maomao: role1AvatarImg.src,
   yewenzhou: role2AvatarImg.src,
   guxizhao: role3AvatarImg.src,
   yexueqing: role4AvatarImg.src,
 };
+

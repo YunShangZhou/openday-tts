@@ -3,20 +3,16 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 
 import noticeSvg from "@/assets/svg/notice.svg";
-import voiceGraphImg from "@/assets/image/voice-graph.png";
 
 import styles from "./index.module.scss";
 import classnames from "classnames/bind";
-import { roleData } from "@/constant";
+import { PER_FRAME, TOTAL_TIME, roleData } from "@/constant";
 import { useEffect, useRef, useState } from "react";
 import { base64ToURL, getAudioUrl } from "@/utils";
 import { getCovertSpeechUrl } from "@/services";
 const cx = classnames.bind(styles);
 
-const TOTAL_TIME = 60;
-const PER_FRAME = 60;
-
-const Home: React.FC = () => {
+const SpeechCovert: React.FC = () => {
   const searchParams = useSearchParams();
   const role = searchParams.get("role") as string;
 
@@ -32,26 +28,13 @@ const Home: React.FC = () => {
   const recorderInstance = useRef<any>(null);
 
   useEffect(() => {
-    console.log(`>>> audioUrl`, audioUrl);
-  }, [audioUrl]);
-
-  useEffect(() => {
-    getAudioUrl(recorderInstance, setAudioUrl, setB64Data);
+    getAudioUrl(recorderInstance, setAudioUrl, setB64Data, () => {
+      setRecording(true);
+    });
   }, []);
 
   useEffect(() => {
-    if (recorderInstance.current !== null && !recording) {
-      console.log("开始录制...");
-      console.log(`recorderInstance.current`, recorderInstance.current);
-      recorderInstance.current.start();
-      setRecording(true);
-    }
-  }, [recorderInstance.current]);
-
-  useEffect(() => {
-    console.log("111");
     if (!recording && !!b64Data) {
-      console.log("222");
       fetchSpeech();
     }
   }, [b64Data]);
@@ -79,7 +62,6 @@ const Home: React.FC = () => {
     };
 
     const res = await getCovertSpeechUrl(params);
-    console.log(`>>>>> res`, res);
     if (res) {
       const { speech } = res;
       const url: string = base64ToURL(speech);
@@ -90,10 +72,11 @@ const Home: React.FC = () => {
   const handleReset = () => {
     setCurrentFrame(TOTAL_TIME * PER_FRAME);
     setAudioUrl("");
+    setRecording(true);
+    recorderInstance.current.start();
   };
 
   const handleFetch = () => {
-    console.log(`>>> 过年`);
     recorderInstance.current.stop();
     setRecording(false);
   };
@@ -128,13 +111,12 @@ const Home: React.FC = () => {
             </span>
           </div>
           <div className={cx("recorder-wrap")}>
-            <Image
-              className={cx("voice-graph")}
-              src={voiceGraphImg.src}
-              alt=""
-              width={840}
-              height={200}
-            />
+            <canvas
+              id="visualizer"
+              className={cx("visualizer")}
+              height="168"
+              width="1198"
+            ></canvas>
             <div className={cx("progress-wrap")}>
               {audioUrl === "" && (
                 <div className={cx("progress")}>
@@ -158,9 +140,11 @@ const Home: React.FC = () => {
             {audioUrl === "" && (
               <button
                 className={cx("btn", "complete-btn")}
-                onClick={handleFetch}
+                onClick={() => {
+                  handleFetch();
+                }}
               >
-                {recording ? "完成" : "开始"}
+                完成
               </button>
             )}
             {(currentFrame === 0 || audioUrl) && (
@@ -189,4 +173,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default SpeechCovert;
