@@ -73,14 +73,11 @@
         align-items: center;
         margin-top: 30px;
 
-        .voice-graph {
-          // width: 100%;
-        }
-
         .visualizer {
-          width: 100%;
+          width: 75%;
+          min-width: 840px;
           height: 168px;
-          margin-bottom: 35px;
+          margin-bottom: 20px;
         }
 
         .progress-wrap {
@@ -107,8 +104,8 @@
           }
 
           .text {
-            // width: 144px;
-            width: 195px;
+            width: 144px;
+            // width: 195px;
             color: rgba(255, 255, 255, 0.65);
             font-size: 24px;
             font-weight: 400;

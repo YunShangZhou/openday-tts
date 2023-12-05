@@ -115,7 +115,7 @@ const SpeechCovert: React.FC = () => {
               id="visualizer"
               className={cx("visualizer")}
               height="168"
-              width="1198"
+              width="840"
             ></canvas>
             <div className={cx("progress-wrap")}>
               {audioUrl === "" && (
@@ -131,9 +131,10 @@ const SpeechCovert: React.FC = () => {
                 </div>
               )}
               {audioUrl && <audio className="flex-1" controls src={audioUrl} />}
-              <span className={cx("text")}>{`祝福语音计时 ${Math.ceil(
+              {/* <span className={cx("text")}>{`祝福语音计时 ${Math.ceil(
                 currentFrame / PER_FRAME
-              )}s`}</span>
+              )}s`}</span> */}
+              <span className={cx("text")}>祝福语音计时</span>
             </div>
           </div>
           <div className={cx("btns-wrap")}>
