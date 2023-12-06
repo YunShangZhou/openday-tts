@@ -1,8 +1,8 @@
 FROM node:20-alpine
 
-RUN mkdir ./fronted
+RUN mkdir ./app
 
-WORKDIR /fronted
+WORKDIR /app
 RUN npm install -g pnpm
 
 # COPY ./package*.json ./fronted
