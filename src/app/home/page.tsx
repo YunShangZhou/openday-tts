@@ -58,7 +58,7 @@ const Home: React.FC = () => {
       <div className={cx("card-list-wrap")}>
         {renderRoleCardList()}
         <Link
-          href={`/speechCovert?role=${roleNameMap?.[activeIndex]?.[0]}`}
+          href={`/speech?role=${roleNameMap?.[activeIndex]?.[0]}`}
           className={cx(
             "confirm-btn",
             activeIndex < 0 ? "confirm-btn--disabled" : ""

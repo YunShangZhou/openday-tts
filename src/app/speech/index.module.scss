@@ -167,3 +167,113 @@
     }
   }
 }
+
+.speech-play {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .center-card {
+    display: flex;
+    flex-direction: column;
+
+    width: 1400px;
+    // height: 703px;
+    min-height: 703px;
+    padding: 30px 40px;
+
+    background: url("~@/assets/image/congratulation-container.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    position: relative;
+
+    .badge {
+      position: absolute;
+      right: 0;
+      top: 0;
+      transform: translate(40%, -30%);
+    }
+
+    .header {
+      display: flex;
+      gap: 150px;
+      .title-wrap {
+        margin-top: 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        .text {
+          font-family: PingFang SC;
+          font-size: 48px;
+          font-weight: 600;
+          line-height: 67px;
+          letter-spacing: 0em;
+          text-align: center;
+        }
+        .prefix {
+        }
+      }
+
+      .slogan-list {
+        display: flex;
+        gap: 40px;
+
+        .item {
+          display: flex;
+          align-items: flex-start;
+          gap: 40px;
+          .text {
+            font-family: PingFang SC;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 22px;
+            letter-spacing: 0em;
+            text-align: center;
+          }
+          .suffix {
+          }
+        }
+      }
+    }
+
+    .content {
+      padding: 80px 65px;
+
+      .desc-wrap {
+        display: flex;
+        flex-direction: column;
+        color: rgba(255, 255, 255, 1);
+
+        .text {
+          font-size: 32px;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+  .back-btn {
+    margin-top: 40px;
+
+    display: inline-flex;
+    padding: 8px 40px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 40px;
+
+    font-size: 32px;
+    font-weight: 500;
+
+    background-color: #ff504d;
+    color: #000;
+  }
+  .back-btn:hover {
+    filter: brightness(1.15);
+  }
+}
+

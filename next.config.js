@@ -17,8 +17,8 @@ const nextConfig = {
     return [
       {
         source: "/",
-        // destination: "/home",
-        destination: "/currentDev",
+        destination: "/home",
+        // destination: "/currentDev",
         permanent: true,
       },
     ];

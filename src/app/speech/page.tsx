@@ -2,6 +2,8 @@
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 
+import badgeSvg from "@/assets/svg/badge.svg";
+import starSvg from "@/assets/svg/star.svg";
 import noticeSvg from "@/assets/svg/notice.svg";
 
 import styles from "./index.module.scss";
@@ -10,9 +12,20 @@ import { PER_FRAME, TOTAL_TIME, roleData } from "@/constant";
 import { useEffect, useRef, useState } from "react";
 import { base64ToURL, getAudioUrl } from "@/utils";
 import { getCovertSpeechUrl } from "@/services";
+import Link from "next/link";
 const cx = classnames.bind(styles);
 
-const SpeechCovert: React.FC = () => {
+interface SpeechCovertProp {
+  onSetAudioUrl: (url: string) => void;
+}
+
+interface SpeechPlayProp {
+  audioUrl: string;
+}
+
+const SpeechCovert: React.FC<SpeechCovertProp> = (prop) => {
+  const { onSetAudioUrl } = prop;
+
   const searchParams = useSearchParams();
   const role = searchParams.get("role") as string;
 
@@ -22,7 +35,7 @@ const SpeechCovert: React.FC = () => {
   const timer = useRef<any>(null);
   const [recording, setRecording] = useState<boolean>(false);
 
-  const [audioUrl, setAudioUrl] = useState<string>("");
+  const [_, setAudioUrl] = useState<string>(""); // notice: 原录音暂无使用，但保留变量
   const [b64Data, setB64Data] = useState<any>("");
 
   const recorderInstance = useRef<any>(null);
@@ -65,16 +78,16 @@ const SpeechCovert: React.FC = () => {
     if (res) {
       const { speech } = res;
       const url: string = base64ToURL(speech);
-      setAudioUrl(url);
+      onSetAudioUrl(url);
     }
   };
 
-  const handleReset = () => {
-    setCurrentFrame(TOTAL_TIME * PER_FRAME);
-    setAudioUrl("");
-    setRecording(true);
-    recorderInstance.current.start();
-  };
+  // const handleReset = () => {
+  //   setCurrentFrame(TOTAL_TIME * PER_FRAME);
+  //   onSetAudioUrl("");
+  //   setRecording(true);
+  //   recorderInstance.current.start();
+  // };
 
   const handleFetch = () => {
     recorderInstance.current.stop();
@@ -106,7 +119,7 @@ const SpeechCovert: React.FC = () => {
             </span>
             <br />
             <span className={cx("text")}>
-              {roleData[role].realName || roleData[role].name}
+              {roleData?.[role]?.realName || roleData[role].name}
               祝在座的各位，在新的一年里____________！
             </span>
           </div>
@@ -118,7 +131,7 @@ const SpeechCovert: React.FC = () => {
               width="840"
             ></canvas>
             <div className={cx("progress-wrap")}>
-              {audioUrl === "" && (
+              {/* {audioUrl === "" && (
                 <div className={cx("progress")}>
                   <div
                     className={cx("progress-inner")}
@@ -129,16 +142,26 @@ const SpeechCovert: React.FC = () => {
                     }}
                   />
                 </div>
-              )}
-              {audioUrl && <audio className="flex-1" controls src={audioUrl} />}
+              )} */}
+              {/* {audioUrl && <audio className="flex-1" controls src={audioUrl} />} */}
               {/* <span className={cx("text")}>{`祝福语音计时 ${Math.ceil(
                 currentFrame / PER_FRAME
               )}s`}</span> */}
+              <div className={cx("progress")}>
+                <div
+                  className={cx("progress-inner")}
+                  style={{
+                    width: `${
+                      (currentFrame * 100) / (TOTAL_TIME * PER_FRAME)
+                    }%`,
+                  }}
+                />
+              </div>
               <span className={cx("text")}>祝福语音计时</span>
             </div>
           </div>
           <div className={cx("btns-wrap")}>
-            {audioUrl === "" && (
+            {/* {audioUrl === "" && (
               <button
                 className={cx("btn", "complete-btn")}
                 onClick={() => {
@@ -147,12 +170,20 @@ const SpeechCovert: React.FC = () => {
               >
                 完成
               </button>
-            )}
-            {(currentFrame === 0 || audioUrl) && (
+            )} */}
+            {/* {(currentFrame === 0 || audioUrl) && (
               <button className={cx("btn", "reset-btn")} onClick={handleReset}>
                 重新录制
               </button>
-            )}
+            )} */}
+            <button
+              className={cx("btn", "complete-btn")}
+              onClick={() => {
+                handleFetch();
+              }}
+            >
+              完成
+            </button>
           </div>
         </div>
         <div className={cx("footer")}>
@@ -174,4 +205,99 @@ const SpeechCovert: React.FC = () => {
   );
 };
 
-export default SpeechCovert;
+const SpeechPlay: React.FC<SpeechPlayProp> = (prop) => {
+  const { audioUrl } = prop;
+  const role = "maomao";
+  return (
+    <div className={cx("speech-play")}>
+      <div className={cx("center-card")}>
+        <Image
+          className={cx("badge")}
+          src={badgeSvg}
+          alt=""
+          width={203}
+          height={203}
+        />
+        <div className={cx("header")}>
+          <div className={cx("title-wrap")}>
+            <Image
+              className={cx("prefix")}
+              src={starSvg}
+              alt=""
+              width={53}
+              height={53}
+            />
+            <span className={cx("text")}>新岁书笺</span>
+          </div>
+          <div className={cx("slogan-list")}>
+            <div className={cx("item")}>
+              <span className={cx("text")}>GAME FOR OPEN DAY</span>
+              <Image
+                className={cx("suffix")}
+                src={starSvg}
+                alt=""
+                width={20}
+                height={20}
+              />
+            </div>
+            <div className={cx("item")}>
+              <span className={cx("text")}>GAME FOR OPEN DAY</span>
+              <Image
+                className={cx("suffix")}
+                src={starSvg}
+                alt=""
+                width={20}
+                height={20}
+              />
+            </div>
+            <div className={cx("item")}>
+              <span className={cx("text")}>GAME FOR OPEN DAY</span>
+              <Image
+                className={cx("suffix")}
+                src={starSvg}
+                alt=""
+                width={20}
+                height={20}
+              />
+            </div>
+          </div>
+        </div>
+        <div className={cx("content")}>
+          <div className={cx("desc-wrap")}>
+            <span className={cx("text")}>
+              不知何故，总觉得今日比去岁冷了不少。入冬后下过几场大雪，汴京大半都裹上了新雪。
+            </span>
+            <br />
+            <span className={cx("text")}>
+              {roleData?.[role]?.realName || roleData[role].name}
+              祝在座的各位，在新的一年里____________！
+            </span>
+          </div>
+          <audio className="flex-1 invisible" autoPlay src={audioUrl} />
+        </div>
+      </div>
+      <Link href="/" className={cx("back-btn")}>
+        返回
+      </Link>
+    </div>
+  );
+};
+
+const Index: React.FC = () => {
+  const [audioUrl, setAudioUrl] = useState<string>("");
+  return (
+    <>
+      {audioUrl === "" ? (
+        <SpeechCovert
+          onSetAudioUrl={(url: string) => {
+            setAudioUrl(url);
+          }}
+        />
+      ) : (
+        <SpeechPlay audioUrl={audioUrl} />
+      )}
+    </>
+  );
+};
+
+export default Index;
