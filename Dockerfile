@@ -1,20 +1,19 @@
 FROM node:20-alpine
 
-RUN mkdir ./app
+ARG env
 
+RUN mkdir /app
 WORKDIR /app
-RUN npm install -g pnpm
 
-# COPY ./package*.json ./fronted
-COPY ./package.json ./
-COPY ./package-lock.json ./
+COPY ./package.json .
+COPY ./package-lock.json .
 
+RUN npm install pnpm -g
 RUN pnpm install
 
 COPY . .
 
-RUN npm run build
+RUN pnpm run build
 
-EXPOSE 3100
+CMD NODE_ENV={env} pnpm run start
 
-CMD ["npm","start"]

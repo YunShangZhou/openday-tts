@@ -1,5 +1,7 @@
 const path = require("path");
 
+// const isDevelopment = process.env.NODE_ENV && "development";
+
 const ttsServer = {
   avatarlib: "https://avatarlib-dev.apps-cae.danlu.netease.com",
 };

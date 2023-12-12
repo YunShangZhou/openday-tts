@@ -1,6 +1,6 @@
 {
   "name": "openday",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "scripts": {
     "dev": "next dev --experimental-https",
@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@nestjs/mapped-types": "*",
     "base64-js": "^1.5.1",
     "classnames": "^2.3.2",
     "next": "14.0.3",
