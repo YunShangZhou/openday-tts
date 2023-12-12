@@ -1,7 +1,5 @@
 FROM node:20-alpine
 
-ARG env
-
 RUN mkdir /app
 WORKDIR /app
 
@@ -15,5 +13,5 @@ COPY . .
 
 RUN pnpm run build
 
-CMD NODE_ENV={env} pnpm run start
+CMD pnpm run start
 
